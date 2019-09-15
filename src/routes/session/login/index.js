@@ -40,9 +40,7 @@ class Signin extends Component {
     if (this.state.isverifiedCaptcha === false) {
       NotificationManager.error(<IntlMessages id="Login.captcha"/>)
     }
-    else if (this.state.email !== '' && this.state.password !== '' && this.state.isverifiedCaptcha) {
-      console.log("WTFFFFFFFFFFFFF");
-      
+    else if (this.state.email !== '' && this.state.password !== '' && this.state.isverifiedCaptcha) {      
       STIB_Authentication.login(this.state.email, this.state.password, ()=>
       {
         this.props.history.push('/app/dashboard/ecommerce')

@@ -58,11 +58,12 @@ const InitialPath = ({ component: Component, ...rest, authUser }) =>
 	<Route
 		{...rest}
 		render={props =>
-			authUser
+			// authUser
+			true
 				? <Component {...props} />
 				: <Redirect
 					to={{
-						pathname: '/signin',
+						pathname: '/session/login',
 						state: { from: props.location }
 					}}
 				/>}
@@ -73,7 +74,7 @@ class App extends Component {
 		const { location, match, user } = this.props;
 		if (location.pathname === '/') {
 			if (user === null) {
-				return (<Redirect to={'/signin'} />);
+				return (<Redirect to={'/session/login'} />);
 			} else {
 				return (<Redirect to={'/app/dashboard/ecommerce'} />);
 			}

@@ -24,6 +24,8 @@ import RequestsList from 'Routes/RequestsList';
 import requestMoreInfo from 'Routes/requestMoreInfo';
 import balanceHistory from 'Routes/balanceHistory';
 import increaseBalance from 'Routes/increaseBalance';
+import setTodaysRates from 'Routes/setTodaysRates';
+
 
 
 // async component
@@ -143,6 +145,10 @@ export default [
 	{
 		path: 'increaseBalance',
 		component: increaseBalance
+	},
+	{
+		path: 'setTodaysRates',
+		component: setTodaysRates
 	}
 	
 ]

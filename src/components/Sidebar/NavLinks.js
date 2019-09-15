@@ -490,13 +490,13 @@ export default {
 		{
 			"menu_title": "Reports",
 			"menu_icon": "zmdi zmdi-plus",
-			"path": "",
+			"path": "/app/pages/report",
 			"child_routes": null
 		},
 		{
 			"menu_title": "Set Today's Rates",
 			"menu_icon": "zmdi zmdi-calendar",
-			"path": "",
+			"path": "/app/setTodaysRates",
 			"child_routes": null
 		},
 		{

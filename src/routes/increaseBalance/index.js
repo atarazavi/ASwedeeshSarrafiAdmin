@@ -5,9 +5,9 @@ import {
 } from "Components/Widgets";
 // page title bar
 import PageTitleBar from 'Components/PageTitleBar/PageTitleBar';
-
+import ReactSelect from './component/reactSelect'
 import DropzoneComponent from 'react-dropzone-component';
-
+import {NotificationManager } from 'react-notifications';
 import {
 	Button,
 	Form,
@@ -17,7 +17,7 @@ import {
 } from 'reactstrap';
 // intl messages
 import IntlMessages from 'Util/IntlMessages';
-
+import AppConfig from 'Constants/AppConfig'
 import FormGroupmaterial from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Radio from '@material-ui/core/Radio';
@@ -57,15 +57,72 @@ export default class increaseBalance extends Component {
  
        this.dropzone = null;
     }
-    
+    state = {
+        customerSuggestions: [],
+        chosemCustomerID: -1,
+        chosemCustomerName: '',
+        chosemCustomerBalanace: 0
+    }
+    componentDidMount () { 
+        (async () => {
+            try{
+                const rawResponse = await fetch(AppConfig.baseURL + '/customer', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                const content = await rawResponse.json();            
+                if (rawResponse.status === 200){
+                    const customerSuggestions = content.map(each => {
+                        return({
+                            id: each.userId,
+                            userName: each.userName,
+                            label: `${each.name} ${each.familyName} (${each.userName})`,
+                            value: each.userId
+                        })
+                    })
+                    this.setState({
+                        customerSuggestions
+                    })
+                }else{
+                    NotificationManager.error('Something went wrong' + rawResponse.status)
+                }
+            } catch (err){
+                NotificationManager.error("something went wrong on Connecting The Server : " + err);
+            }
+        })();
+    }
 	handleChangeRadio = (e, key) => {
 		this.setState({ [key]: e.target.value });
     }
-    
 	toggle = () => {
 		this.setState({ collapse: !this.state.collapse });
     }
-
+    handleChangeOnautoComplete = (result, target) => {
+      switch (target) {
+        case "customerSuggestions": {
+          if (result === null) {
+            this.setState({ chosemCustomerID: 0 });
+          } else {
+            this.state.customerSuggestions.map(each => {
+                each.value == result && this.setState(
+                    { 
+                        chosemCustomerID: each.id,
+                        chosemCustomerName: each.userName,
+                        chosemCustomerBalanace: each.currentBalance
+                    }
+                );
+            });
+          }
+          break;
+        }
+        default: {
+          console.log("Invalid choice");
+          break;
+        }
+      }
+    };
 	render() {
         const config = this.componentConfig;
         const djsConfig = this.djsConfig;
@@ -81,7 +138,20 @@ export default class increaseBalance extends Component {
 		return (
 			<div className="user-widgets-wrapper">
 				<PageTitleBar title={<IntlMessages id="Increase Balance" />} match={this.props.match} />
-                <CurrentBalance currency="USD" />
+                <div className="row">
+                    <CurrentBalance currency="USD" half="true" balance={this.state.chosemCustomerBalanace} ClientsName={this.state.chosemCustomerName} />
+                    <div className="col-sm-6 col-md-6 col-lg-6 w-8-half-block">
+                        <RctCollapsibleCard>
+                            Choose the User from the below list: 
+                            <ReactSelect
+                                fullWidth
+                                changeHandler={this.handleChangeOnautoComplete}
+                                target="customerSuggestions"
+                                suggestions={this.state.customerSuggestions}
+                            />
+                        </RctCollapsibleCard>
+                    </div>
+                </div>
                 <div className="row">
                     <div className="col-sm-12 col-md-4 col-lg-4 d-sm-full">
                         <div className="row">
