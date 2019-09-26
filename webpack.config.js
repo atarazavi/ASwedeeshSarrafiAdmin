@@ -52,9 +52,9 @@ module.exports = {
     },
     devServer: {
         contentBase: './src/index.js',
-        host: '0.0.0.0',
+        host: 'localhost',
         compress: true,
-        port: 4000, // port number
+        port: 90, // port number
         historyApiFallback: true,
         quiet: true
     },
